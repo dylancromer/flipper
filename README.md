@@ -7,9 +7,10 @@ http://www.hep.anl.gov/sdas/flipperDocumentation/
 
 In contrast with the original version, after installation (see below) you now import the flipper module you need from the flipper package. For example,
 
-``from flipper import liteMap
+```
+from flipper import liteMap
 import flipper.fftTools as ft
-``
+```
 
 Flipper is a light-weight python tool for working with CMB data which broadly provides three main functionalities:
 A suite of tools for operations performed on maps, like application of filters, taking gradients etc.
@@ -45,7 +46,9 @@ Installation
 
 1. Fork and clone this repository
 2. In the repository root directory, run
-``pip install -e . --user``
+```
+pip install -e . --user
+```
 
 That's it! Now you should be able to import flipper modules as described earlier from anywhere on your system as long as `pip` is installed correctly.
 

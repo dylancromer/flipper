@@ -26,7 +26,7 @@ and led to a slew of papers with over 300 citations.
 Dependencies
 ==============
 
-Flipper should work out of the box if it can import the following:
+The following dependencies will be installed if they are not found:
 
 numpy 
 

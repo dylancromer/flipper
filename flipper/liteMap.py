@@ -10,6 +10,7 @@ import pylab
 import copy
 import pyfits
 import astLib
+from astLib import astWCS
 from utils import *
 from fftTools import fftFromLiteMap
 import fftTools
@@ -148,7 +149,7 @@ class liteMap:
         Nx = self.Nx*bufferFactor
         
         bufferFactor = int(bufferFactor)
-        assert(bufferFactor>=1)
+        assert bufferFactor>=1
         
         
         realPart = numpy.zeros([Ny,Nx])
@@ -224,8 +225,8 @@ class liteMap:
 
         ix0,iy0 = self.skyToPix(x0,y0)
         ix1,iy1 = self.skyToPix(x1,y1)
-        assert((ix0 >0) & (ix1>0))
-        assert((iy0 >0) & (iy1>0))
+        assert (ix0 >0) & (ix1>0)
+        assert (iy0 >0) & (iy1>0)
         i0 = numpy.int(ix0+0.5)
         j0 = numpy.int(iy0+0.5)
         i1 = numpy.int(ix1+0.5)
@@ -844,11 +845,11 @@ def resampleFromHiResMap(highResMap, lowResTemp):
     @return low res map 
     """
     #print highResMap.y0 - lowResTemp.y0
-    assert(numpy.abs(highResMap.x0-lowResTemp.x0)/highResMap.x0 < 0.0001)
-    assert(numpy.abs(highResMap.y0-lowResTemp.y0)/highResMap.x0 < 0.0001)
+    assert numpy.abs(highResMap.x0-lowResTemp.x0)/highResMap.x0 < 0.0001
+    assert numpy.abs(highResMap.y0-lowResTemp.y0)/highResMap.x0 < 0.0001
     #assert(highResMap.y0 == lowResTemp.y0)
-    assert(highResMap.Nx> lowResTemp.Nx)
-    assert(highResMap.Ny> lowResTemp.Ny)
+    assert highResMap.Nx> lowResTemp.Nx
+    assert highResMap.Ny> lowResTemp.Ny
     
     m = lowResTemp.copy()
     w = lowResTemp.copy()
@@ -862,7 +863,7 @@ def resampleFromHiResMap(highResMap, lowResTemp):
             m.data[iy,ix] += highResMap.data[i,j]
             w.data[iy,ix] += 1.0
     t1 = time.time()
-    assert(numpy.all(w.data[:] >0.))
+    assert numpy.all(w.data[:] >0.)
     m.data[:] /=w.data[:]
     return m 
 
@@ -905,7 +906,7 @@ def binDataAroundPoint( m, x0, y0, bins, median = False ):
 
 def makeEmptyCEATemplate(raSizeDeg, decSizeDeg,meanRa = 180., meanDec = 0.,\
                       pixScaleXarcmin = 0.5, pixScaleYarcmin=0.5):
-    assert(meanDec == 0.,'mean dec other than zero not implemented yet')
+    assert meanDec == 0.,'mean dec other than zero not implemented yet'
 
     
     cdelt1 = -pixScaleXarcmin/60.
@@ -944,8 +945,8 @@ def makeEmptyCEATemplateAdvanced(ra0, dec0, \
     """
     ALL RA DEC IN DEGREES
     """
-    assert(ra0<ra1)
-    assert(dec0<dec1)
+    assert ra0<ra1
+    assert dec0<dec1
     refDec = (dec0+dec1)/2.
     cosRefDec =  numpy.cos(refDec/180.*numpy.pi)
     raSizeDeg  = (ra1 - ra0)*cosRefDec

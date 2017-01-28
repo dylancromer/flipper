@@ -19,7 +19,7 @@ import sys, os
 from utils import *
 import flTrace
 import pyfits
-taperDir = os.environ["FLIPPER_DIR"] + os.path.sep + "tapers"
+taperDir = os.path.dirname(os.path.abspath(__file__))+ os.path.sep+'..'+ os.path.sep + "tapers"
 
 class fft2D:
     """

@@ -11,6 +11,7 @@ import copy
 import pyfits
 import astLib
 from astLib import astWCS
+from astLib import astCoords
 from utils import *
 from fftTools import fftFromLiteMap
 import fftTools
@@ -63,10 +64,10 @@ class liteMap:
         print "Pixel Scales: (%f,%f) arcmins. "%(self.pixScaleY*arcmin,self.pixScaleX*arcmin)
         print "Map Bounds: [(x0,y0), (x1,y1)]: [(%f,%f),(%f,%f)] (degrees)"%(self.x0,self.y0,self.x1,self.y1)
         print "Map Bounds: [(x0,y0), (x1,y1)]: [(%s,%s),(%s,%s)]"%\
-              (astLib.astCoords.decimal2hms(self.x0,':'),\
-               astLib.astCoords.decimal2dms(self.y0,':'),\
-               astLib.astCoords.decimal2hms(self.x1,':'),\
-               astLib.astCoords.decimal2dms(self.y1,':'))
+              (astCoords.decimal2hms(self.x0,':'),\
+               astCoords.decimal2dms(self.y0,':'),\
+               astCoords.decimal2hms(self.x1,':'),\
+               astCoords.decimal2dms(self.y1,':'))
         
         print "Map area = %f sq. degrees."%(self.area)
         print "Map mean = %f"%(self.data.mean())
@@ -435,7 +436,7 @@ class liteMap:
         phOut = []
         if hpCoords != "J2000":
             for i in xrange(len(th)):
-                crd = astLib.astCoords.convertCoords("J2000", hpCoords, ph[i], th[i], 0.)
+                crd = astCoords.convertCoords("J2000", hpCoords, ph[i], th[i], 0.)
                 phOut.append(crd[0])
                 thOut.append(crd[1])
             thOut = numpy.array(thOut)

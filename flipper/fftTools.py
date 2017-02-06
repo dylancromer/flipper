@@ -10,7 +10,8 @@ try:
     import pylab
 except:
     pass
-from numpy.fft import fftshift,fftfreq,fft2,ifft2
+from numpy.fft import fftshift,fftfreq #,fft2,ifft2
+from pyfftw.interfaces.scipy_fftpack import fft2,ifft2
 import copy
 from scipy.interpolate import splrep, splev
 import scipy

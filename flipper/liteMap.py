@@ -8,7 +8,11 @@ import os, sys, copy
 import numpy, scipy
 import pylab
 import copy
-import pyfits
+
+import astropy.io.fits as pyfits
+#import astropy.wcs as pywcs
+#import pyfits
+
 import astLib
 from astLib import astWCS
 from utils import *
@@ -237,10 +241,10 @@ class liteMap:
         data = (self.data.copy())[iyy[0]:iyy[1],ixx[0]:ixx[1]]
         wcs = self.wcs.copy()
         naxis2,naxis1 = data.shape
-        wcs.header.update('NAXIS1',naxis1)
-        wcs.header.update('NAXIS2',naxis2)
-        wcs.header.update('CRPIX1',wcs.header['CRPIX1']-ixx[0])
-        wcs.header.update('CRPIX2',wcs.header['CRPIX2']-iyy[0])
+        wcs.header['NAXIS1'] = naxis1
+        wcs.header['NAXIS2'] = naxis2
+        wcs.header['CRPIX1'] = wcs.header['CRPIX1']-ixx[0]
+        wcs.header['CRPIX2'] = wcs.header['CRPIX2']-iyy[0]
         wcs.updateFromHeader()
         smallMap = liteMapFromDataAndWCS(data,wcs)
         del data,wcs
@@ -250,7 +254,7 @@ class liteMap:
         """
         @brief add key/value pair to the header
         """
-        self.wcs.header.update(key, val)
+        self.wcs.header[key] = val
             
     def plot(self,valueRange = None,\
              show = True,\
@@ -508,9 +512,9 @@ class liteMap:
         """
         Normalizes WCS of map
         """
-        self.wcs.header.update('CDELT1',map.wcs.header['CDELT1'])
-        self.wcs.header.update('CDELT2',map.wcs.header['CDELT2'])
-        self.wcs.header.update('PV2_1',map.wcs.header['PV2_1'])
+        self.wcs.header['CDELT1'] = map.wcs.header['CDELT1']
+        self.wcs.header['CDELT2'] = map.wcs.header['CDELT2']
+        self.wcs.header['PV2_1'] = map.wcs.header['PV2_1']
         self.wcs.updateFromHeader()
         self.header = self.wcs.header.copy()
 
@@ -718,9 +722,9 @@ def normalizeWCS(map0,map1):
 
     wcs0 = map0.wcs.copy()
     wcs1 = map1.wcs.copy()
-    wcs1.header.update('CDELT1',wcs0.header['CDELT1'])
-    wcs1.header.update('CDELT2',wcs0.header['CDELT2'])
-    wcs1.header.update('PV2_1',wcs0.header['PV2_1'])
+    wcs1.header['CDELT1'] =  wcs0.header['CDELT1']
+    wcs1.header['CDELT2'] = wcs0.header['CDELT2']
+    wcs1.header['PV2_1'] = wcs0.header['PV2_1']
     
     wcs1.updateFromHeader()
     data = map1.data.copy()
@@ -783,16 +787,16 @@ def upgradePixelPitch( m, N = 1 ):
     x0_new,y0_new = m.pixToSky(0,0)
     
     m = m.copy() # don't overwrite original 
-    m.wcs.header.update('NAXIS1',  2**N*m.wcs.header['NAXIS1'] )
-    m.wcs.header.update('NAXIS2',  2**N*m.wcs.header['NAXIS2'] )
-    m.wcs.header.update('CDELT1',  m.wcs.header['CDELT1']/2.**N)
-    m.wcs.header.update('CDELT2',  m.wcs.header['CDELT2']/2.**N)
+    m.wcs.header['NAXIS1'] =  2**N*m.wcs.header['NAXIS1']
+    m.wcs.header['NAXIS2'] = 2**N*m.wcs.header['NAXIS2'] 
+    m.wcs.header['CDELT1'] = m.wcs.header['CDELT1']/2.**N
+    m.wcs.header['CDELT2'] = m.wcs.header['CDELT2']/2.**N
     m.wcs.updateFromHeader()
     
     p_x, p_y = m.skyToPix(x0_new, y0_new)
     
-    m.wcs.header.update('CRPIX1', m.wcs.header['CRPIX1'] - p_x)
-    m.wcs.header.update('CRPIX2', m.wcs.header['CRPIX2'] - p_y)
+    m.wcs.header['CRPIX1'] = m.wcs.header['CRPIX1'] - p_x
+    m.wcs.header['CRPIX2'] = m.wcs.header['CRPIX2'] - p_y
     m.wcs.updateFromHeader()
 
     mNew = liteMapFromDataAndWCS(numpy.real(newData), m.wcs)
@@ -810,14 +814,14 @@ def getEmptyMapWithDifferentDims(m,Ny,Nx):
     """
     data = numpy.zeros([Ny,Nx])
     m = m.copy()
-    m.wcs.header.update('NAXIS1',Nx)
-    m.wcs.header.update('NAXIS2',Ny)
-    m.wcs.header.update('CDELT1',  m.wcs.header['CDELT1']*(m.Nx/(Nx*1.0)))
-    m.wcs.header.update('CDELT2',  m.wcs.header['CDELT2']*(m.Ny/(Ny*1.0)))
+    m.wcs.header['NAXIS1'] = Nx
+    m.wcs.header['NAXIS2'] = Ny
+    m.wcs.header['CDELT1'] =  m.wcs.header['CDELT1']*(m.Nx/(Nx*1.0))
+    m.wcs.header['CDELT2'] =  m.wcs.header['CDELT2']*(m.Ny/(Ny*1.0))
     m.wcs.updateFromHeader()
     p_x, p_y = m.skyToPix(m.x0,m.y0)
-    m.wcs.header.update('CRPIX1', m.wcs.header['CRPIX1'] - p_x)
-    m.wcs.header.update('CRPIX2', m.wcs.header['CRPIX2'] - p_y)
+    m.wcs.header['CRPIX1'] = m.wcs.header['CRPIX1'] - p_x
+    m.wcs.header['CRPIX2'] = m.wcs.header['CRPIX2'] - p_y
     m.wcs.updateFromHeader()
     mNew = liteMapFromDataAndWCS(data, m.wcs)
     return mNew
@@ -844,10 +848,10 @@ def resampleFromHiResMap(highResMap, lowResTemp):
     Maps must be on the same patch of sky
     @return low res map 
     """
-    #print highResMap.y0 - lowResTemp.y0
+    print highResMap.y0 - lowResTemp.y0
     assert numpy.abs(highResMap.x0-lowResTemp.x0)/highResMap.x0 < 0.0001
     assert numpy.abs(highResMap.y0-lowResTemp.y0)/highResMap.x0 < 0.0001
-    #assert(highResMap.y0 == lowResTemp.y0)
+    assert(highResMap.y0 == lowResTemp.y0)
     assert highResMap.Nx> lowResTemp.Nx
     assert highResMap.Ny> lowResTemp.Ny
     

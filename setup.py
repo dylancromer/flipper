@@ -13,5 +13,5 @@ setup(name='flipper',
                         'matplotlib>=1.5.3',
                         'pyfits',
                         'scipy>=0.18.1',
-                        'astLib>0.8.0'],
+                        'astLib>=0.8.0'],
       zip_safe=False)

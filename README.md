@@ -1,5 +1,8 @@
 flipper
 =======
+
+This branch uses Sigurd Naess' FFT module from Enlib. If you cannot satisfy this dependency, use the master branch.
+
 Originally authored by Sudeep Das and Toby Marriage, this fork of flipper is jointly maintained on the ACT organization.
 
 Documentation can be found at:
@@ -39,6 +42,9 @@ astLib http://astlib.sourceforge.net/
 matplotlib http://matplotlib.sourceforge.net/
 
 healpy http://code.google.com/p/healpy/
+
+The following dependency has to be satisfied manually:
+enlib https://github.com/amaurea/enlib
 
 
 Installation

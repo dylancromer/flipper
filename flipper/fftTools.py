@@ -14,7 +14,8 @@ from numpy.fft import fftshift,fftfreq #,fft2,ifft2
 
 # Use scipy if you can't install pyfftw for slightly slower FFTs 
 #from scipy.fftpack import fft2,ifft2
-from pyfftw.interfaces.scipy_fftpack import fft2,ifft2
+#from pyfftw.interfaces.scipy_fftpack import fft2,ifft2
+from enlib import fft as fftfast
 
 
 import copy
@@ -79,9 +80,9 @@ class fft2D:
         if returnFFT:
             ftMap = self.copy()
             ftMap.kMap = kMap.copy()
-            return numpy.real(ifft2(kMap)),ftMap
+            return numpy.real(fftfast.ifft(kMap,axes=[-2,-1])),ftMap
         else:
-            return numpy.real(ifft2(kMap))
+            return numpy.real(fftfast.ifft2(kMap,axes=[-2,-1]))
 
     def writeFits(self,file,overWrite=False):
         """
@@ -256,7 +257,7 @@ def fftFromLiteMap(liteMap,applySlepianTaper = False,nresForSlepian=3.0):
             pickle.dump(taper,f)
             f.close()
     
-    ft.kMap = fft2(map*taper)
+    ft.kMap = fftfast.fft(map*taper,axes=[-2,-1])
     del map, modLMap, lx, ly
     return ft
 

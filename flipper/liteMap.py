@@ -10,9 +10,10 @@ import scipy
 import pylab
 import copy
 
-import astropy.io.fits as pyfits
+#import astropy.io.fits as pyfits
 #import astropy.wcs as pywcs
-#import pyfits
+import pyfits
+from enlib import fft as fftfast
 
 import astLib
 from astLib import astWCS
@@ -132,7 +133,7 @@ class liteMap:
         
         kMap = realPart+1j*imgPart
         
-        data = np.real(np.fft.ifft2(kMap)) 
+        data = np.real(fftfast.ifft(kMap,axes=[-2,-1])) 
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]
@@ -201,7 +202,7 @@ class liteMap:
         
         kMap = realPart+1j*imgPart
         
-        data = np.real(np.fft.ifft2(kMap)) 
+        data = np.real(fftfast.ifft(kMap,axes=[-2,-1])) 
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]
@@ -745,7 +746,7 @@ def upgradePixelPitch( m, N = 1 ):
     Nx = m.Nx*2**N
     npix = Ny*Nx
 
-    ft = np.fft.fft2(m.data)
+    ft = fftfast.fft(m.data,axes=[-2,-1])
     ftShifted = np.fft.fftshift(ft)
     newFtShifted = np.zeros((Ny, Nx), dtype=np.complex128)
 
@@ -778,11 +779,11 @@ def upgradePixelPitch( m, N = 1 ):
     mPix = np.copy(np.real(ftNew))
     mPix[:] = 0.0
     mPix[mPix.shape[0]/2-(2**(N-1)):mPix.shape[0]/2+(2**(N-1)),mPix.shape[1]/2-(2**(N-1)):mPix.shape[1]/2+(2**(N-1))] = 1./(2.**N)**2
-    ftPix = np.fft.fft2(mPix)
+    ftPix = fftfast.fft(mPix,axes=[-2,-1])
     del mPix
     inds = np.where(ftNew != 0)
     ftNew[inds] /= np.abs(ftPix[inds])
-    newData = np.fft.ifft2(ftNew)*(2**N)**2
+    newData = fftfast.ifft(ftNew,axes=[-2,-1])*(2**N)**2
     del ftNew
     del ftPix
 

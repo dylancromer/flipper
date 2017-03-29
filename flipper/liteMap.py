@@ -133,7 +133,7 @@ class liteMap:
         
         kMap = realPart+1j*imgPart
         
-        data = np.real(fftfast.ifft(kMap,axes=[-2,-1])) 
+        data = np.real(fftfast.ifft(kMap,axes=[-2,-1],normalize=True))
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]
@@ -202,7 +202,7 @@ class liteMap:
         
         kMap = realPart+1j*imgPart
         
-        data = np.real(fftfast.ifft(kMap,axes=[-2,-1])) 
+        data = np.real(fftfast.ifft(kMap,axes=[-2,-1]),normalize=True) 
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]
@@ -783,7 +783,7 @@ def upgradePixelPitch( m, N = 1 ):
     del mPix
     inds = np.where(ftNew != 0)
     ftNew[inds] /= np.abs(ftPix[inds])
-    newData = fftfast.ifft(ftNew,axes=[-2,-1])*(2**N)**2
+    newData = fftfast.ifft(ftNew,axes=[-2,-1],normalize=True)*(2**N)**2
     del ftNew
     del ftPix
 

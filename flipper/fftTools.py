@@ -80,9 +80,9 @@ class fft2D:
         if returnFFT:
             ftMap = self.copy()
             ftMap.kMap = kMap.copy()
-            return numpy.real(fftfast.ifft(kMap,axes=[-2,-1])),ftMap
+            return numpy.real(fftfast.ifft(kMap,axes=[-2,-1]),normalize=True),ftMap
         else:
-            return numpy.real(fftfast.ifft2(kMap,axes=[-2,-1]))
+            return numpy.real(fftfast.ifft(kMap,axes=[-2,-1]),normalize=True)
 
     def writeFits(self,file,overWrite=False):
         """

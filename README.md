@@ -1,5 +1,8 @@
 flipper
 =======
+
+Consider using the enlib_fft branch if you can manually set up a copy of enlib (https://github.com/amaurea/enlib). FFTs will be ~5x faster then.
+
 Originally authored by Sudeep Das and Toby Marriage, this fork of flipper is jointly maintained on the ACT organization.
 
 Documentation can be found at:

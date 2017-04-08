@@ -5,10 +5,15 @@
 """
 
 import os, sys, copy
-import numpy, scipy
+import numpy as np
+import scipy
 import pylab
 import copy
+
+#import astropy.io.fits as pyfits
+#import astropy.wcs as pywcs
 import pyfits
+
 import astLib
 from astLib import astWCS
 from astLib import astCoords
@@ -59,7 +64,7 @@ class liteMap:
         """
         @brief pretty print informstion sbout the litMap
         """
-        arcmin = 180*60./numpy.pi
+        arcmin = 180*60./np.pi
         print "Dimensions (Ny,Nx) = (%d,%d)"%(self.Ny,self.Nx)
         print "Pixel Scales: (%f,%f) arcmins. "%(self.pixScaleY*arcmin,self.pixScaleX*arcmin)
         print "Map Bounds: [(x0,y0), (x1,y1)]: [(%f,%f),(%f,%f)] (degrees)"%(self.x0,self.y0,self.x1,self.y1)
@@ -94,41 +99,41 @@ class liteMap:
         bufferFactor = int(bufferFactor)
         
         
-        realPart = numpy.zeros([Ny,Nx])
-        imgPart  = numpy.zeros([Ny,Nx])
+        realPart = np.zeros([Ny,Nx])
+        imgPart  = np.zeros([Ny,Nx])
         
-        ly = numpy.fft.fftfreq(Ny,d = self.pixScaleY)*(2*numpy.pi)
-        lx = numpy.fft.fftfreq(Nx,d = self.pixScaleX)*(2*numpy.pi)
+        ly = np.fft.fftfreq(Ny,d = self.pixScaleY)*(2*np.pi)
+        lx = np.fft.fftfreq(Nx,d = self.pixScaleX)*(2*np.pi)
         #print ly
-        modLMap = numpy.zeros([Ny,Nx])
-        iy, ix = numpy.mgrid[0:Ny,0:Nx]
-        modLMap[iy,ix] = numpy.sqrt(ly[iy]**2+lx[ix]**2)
+        modLMap = np.zeros([Ny,Nx])
+        iy, ix = np.mgrid[0:Ny,0:Nx]
+        modLMap[iy,ix] = np.sqrt(ly[iy]**2+lx[ix]**2)
         
         s = splrep(ell,Cell,k=3)
         
-        ll = numpy.ravel(modLMap)
+        ll = np.ravel(modLMap)
         kk = splev(ll,s)
-        id = numpy.where(ll>ell.max())
+        id = np.where(ll>ell.max())
         kk[id] = 0.
         #add a cosine ^2 falloff at the very end
-        #id2 = numpy.where( (ll> (ell.max()-500)) & (ll<ell.max()))
+        #id2 = np.where( (ll> (ell.max()-500)) & (ll<ell.max()))
         #lEnd = ll[id2]
-        #kk[id2] *= numpy.cos((lEnd-lEnd.min())/(lEnd.max() -lEnd.min())*numpy.pi/2)
+        #kk[id2] *= np.cos((lEnd-lEnd.min())/(lEnd.max() -lEnd.min())*np.pi/2)
         
         #pylab.loglog(ll,kk)
         
 
         area = Nx*Ny*self.pixScaleX*self.pixScaleY
-        p = numpy.reshape(kk,[Ny,Nx]) /area * (Nx*Ny)**2
+        p = np.reshape(kk,[Ny,Nx]) /area * (Nx*Ny)**2
                 
         
-        realPart = numpy.sqrt(p)*numpy.random.randn(Ny,Nx)
-        imgPart = numpy.sqrt(p)*numpy.random.randn(Ny,Nx)
+        realPart = np.sqrt(p)*np.random.randn(Ny,Nx)
+        imgPart = np.sqrt(p)*np.random.randn(Ny,Nx)
         
         
         kMap = realPart+1j*imgPart
         
-        data = numpy.real(numpy.fft.ifft2(kMap)) 
+        data = np.real(np.fft.ifft2(kMap)) 
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]
@@ -154,50 +159,50 @@ class liteMap:
         assert bufferFactor>=1
         
         
-        realPart = numpy.zeros([Ny,Nx])
-        imgPart  = numpy.zeros([Ny,Nx])
+        realPart = np.zeros([Ny,Nx])
+        imgPart  = np.zeros([Ny,Nx])
         
-        ly = numpy.fft.fftfreq(Ny,d = self.pixScaleY)*(2*numpy.pi)
-        lx = numpy.fft.fftfreq(Nx,d = self.pixScaleX)*(2*numpy.pi)
+        ly = np.fft.fftfreq(Ny,d = self.pixScaleY)*(2*np.pi)
+        lx = np.fft.fftfreq(Nx,d = self.pixScaleX)*(2*np.pi)
         #print ly
-        modLMap = numpy.zeros([Ny,Nx])
-        iy, ix = numpy.mgrid[0:Ny,0:Nx]
-        modLMap[iy,ix] = numpy.sqrt(ly[iy]**2+lx[ix]**2)
+        modLMap = np.zeros([Ny,Nx])
+        iy, ix = np.mgrid[0:Ny,0:Nx]
+        modLMap[iy,ix] = np.sqrt(ly[iy]**2+lx[ix]**2)
 
         if bufferFactor > 1:
-            ell = numpy.ravel(twodPower.modLMap)
-            Cell = numpy.ravel(twodPower.powerMap)
+            ell = np.ravel(twodPower.modLMap)
+            Cell = np.ravel(twodPower.powerMap)
             print ell
             print Cell
             s = splrep(ell,Cell,k=3)
         
             
-            ll = numpy.ravel(modLMap)
+            ll = np.ravel(modLMap)
             kk = splev(ll,s)
             
             
-            id = numpy.where(ll>ell.max())
+            id = np.where(ll>ell.max())
             kk[id] = 0.
             # add a cosine ^2 falloff at the very end
-            # id2 = numpy.where( (ll> (ell.max()-500)) & (ll<ell.max()))
+            # id2 = np.where( (ll> (ell.max()-500)) & (ll<ell.max()))
             # lEnd = ll[id2]
-            # kk[id2] *= numpy.cos((lEnd-lEnd.min())/(lEnd.max() -lEnd.min())*numpy.pi/2)
+            # kk[id2] *= np.cos((lEnd-lEnd.min())/(lEnd.max() -lEnd.min())*np.pi/2)
             
             # pylab.loglog(ll,kk)
 
             area = Nx*Ny*self.pixScaleX*self.pixScaleY
-            p = numpy.reshape(kk,[Ny,Nx]) /area * (Nx*Ny)**2
+            p = np.reshape(kk,[Ny,Nx]) /area * (Nx*Ny)**2
         else:
             area = Nx*Ny*self.pixScaleX*self.pixScaleY
             p = twodPower.powerMap/area*(Nx*Ny)**2
         
-        realPart = numpy.sqrt(p)*numpy.random.randn(Ny,Nx)
-        imgPart = numpy.sqrt(p)*numpy.random.randn(Ny,Nx)
+        realPart = np.sqrt(p)*np.random.randn(Ny,Nx)
+        imgPart = np.sqrt(p)*np.random.randn(Ny,Nx)
         
         
         kMap = realPart+1j*imgPart
         
-        data = numpy.real(numpy.fft.ifft2(kMap)) 
+        data = np.real(np.fft.ifft2(kMap)) 
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]
@@ -215,7 +220,7 @@ class liteMap:
         """
         if safe:
             epsilon = self.pixScaleY
-            cosdec = numpy.cos((y0+y1)/2.*numpy.pi/180.)
+            cosdec = np.cos((y0+y1)/2.*np.pi/180.)
             if x0 < self.x1:
                 x0 = self.x1 + epsilon/cosdec
             if x1 > self.x0:
@@ -229,20 +234,20 @@ class liteMap:
         ix1,iy1 = self.skyToPix(x1,y1)
         assert (ix0 >0) & (ix1>0)
         assert (iy0 >0) & (iy1>0)
-        i0 = numpy.int(ix0+0.5)
-        j0 = numpy.int(iy0+0.5)
-        i1 = numpy.int(ix1+0.5)
-        j1 = numpy.int(iy1+0.5)
-        ixx = numpy.sort([i0,i1])
-        iyy = numpy.sort([j0,j1])
+        i0 = np.int(ix0+0.5)
+        j0 = np.int(iy0+0.5)
+        i1 = np.int(ix1+0.5)
+        j1 = np.int(iy1+0.5)
+        ixx = np.sort([i0,i1])
+        iyy = np.sort([j0,j1])
         #print ixx,iyy
         data = (self.data.copy())[iyy[0]:iyy[1],ixx[0]:ixx[1]]
         wcs = self.wcs.copy()
         naxis2,naxis1 = data.shape
-        wcs.header.update('NAXIS1',naxis1)
-        wcs.header.update('NAXIS2',naxis2)
-        wcs.header.update('CRPIX1',wcs.header['CRPIX1']-ixx[0])
-        wcs.header.update('CRPIX2',wcs.header['CRPIX2']-iyy[0])
+        wcs.header['NAXIS1'] = naxis1
+        wcs.header['NAXIS2'] = naxis2
+        wcs.header['CRPIX1'] = wcs.header['CRPIX1']-ixx[0]
+        wcs.header['CRPIX2'] = wcs.header['CRPIX2']-iyy[0]
         wcs.updateFromHeader()
         smallMap = liteMapFromDataAndWCS(data,wcs)
         del data,wcs
@@ -252,7 +257,7 @@ class liteMap:
         """
         @brief add key/value pair to the header
         """
-        self.wcs.header.update(key, val)
+        self.wcs.header[key] = val
             
     def plot(self,valueRange = None,\
              show = True,\
@@ -309,7 +314,7 @@ class liteMap:
         if not(useImagePlot):
             pylab.imshow(self.data,origin="down",vmin=vmin,vmax=vmax,\
                          extent=[self.x0,self.x1,self.y0,self.y1],\
-                         aspect=1./(numpy.cos(0.5*numpy.pi/180.*(self.y0+self.y1))),\
+                         aspect=1./(np.cos(0.5*np.pi/180.*(self.y0+self.y1))),\
                          cmap=cmap)
         else:
             astLib.astPlots.ImagePlot(self.data,self.wcs,colorMapName=colorMapName,\
@@ -332,7 +337,7 @@ class liteMap:
         @brief takes gradient of a liteMap
         @return a gradMap object
         """
-        gradY,gradX = numpy.gradient(self.data,self.pixScaleY,self.pixScaleX)
+        gradY,gradX = np.gradient(self.data,self.pixScaleY,self.pixScaleX)
         gradm = gradMap()
         gradm.gradX = self.copy()
         gradm.gradY = self.copy()
@@ -358,9 +363,9 @@ class liteMap:
         @param nSigma Number of sigmas the Gaussian kernel is defined out to.
         """
 
-        fwhm *= numpy.pi/(180.*60.)
-        sigmaY = fwhm/(numpy.sqrt(8.*numpy.log(2.))*self.pixScaleY)
-        sigmaX = fwhm/(numpy.sqrt(8.*numpy.log(2.))*self.pixScaleX)
+        fwhm *= np.pi/(180.*60.)
+        sigmaY = fwhm/(np.sqrt(8.*np.log(2.))*self.pixScaleY)
+        sigmaX = fwhm/(np.sqrt(8.*np.log(2.))*self.pixScaleX)
         smMap = self.copy()
         
         data = gaussianSmooth(self.data,sigmaY,sigmaX,nSigma=nSigma)
@@ -427,10 +432,10 @@ class liteMap:
 
         Assumes that liteMap is in J2000 RA Dec. The Healpix map must contain the liteMap.
         """
-        inds = numpy.indices([self.Nx, self.Ny])
+        inds = np.indices([self.Nx, self.Ny])
         x = inds[0].ravel()
         y = inds[1].ravel()
-        skyLinear = numpy.array(self.pixToSky(x,y))
+        skyLinear = np.array(self.pixToSky(x,y))
         ph = skyLinear[:,0]
         th = skyLinear[:,1]
         thOut = []
@@ -440,8 +445,8 @@ class liteMap:
                 crd = astCoords.convertCoords("J2000", hpCoords, ph[i], th[i], 0.)
                 phOut.append(crd[0])
                 thOut.append(crd[1])
-            thOut = numpy.array(thOut)
-            phOut = numpy.array(phOut)
+            thOut = np.array(thOut)
+            phOut = np.array(phOut)
         else:
             thOut = th
             phOut = ph
@@ -449,9 +454,9 @@ class liteMap:
         flTrace.issue("flipper.liteMap", 3, "phi (min, max): %f, %f" % (ph.min(), ph.max()))
         flTrace.issue("flipper.liteMap", 3, "phiOut (min, max): (%f, %f)  " %  ( phOut.min(), phOut.max() ))
         flTrace.issue("flipper.liteMap", 3, "thetaOut (min, max): (%f, %f)  " %  ( thOut.min(), thOut.max() ))
-        phOut *= numpy.pi/180
+        phOut *= np.pi/180
         thOut = 90. - thOut #polar angle is 0 at north pole
-        thOut *= numpy.pi/180
+        thOut *= np.pi/180
         flTrace.issue("flipper.liteMap", 3, "phiOut rad (min, max): (%f, %f)  " %  ( phOut.min(), phOut.max() ))
         flTrace.issue("flipper.liteMap", 3, "thetaOut rad (min, max): (%f, %f)  " %  ( thOut.min(), thOut.max() ))
         if interpolate:
@@ -510,9 +515,9 @@ class liteMap:
         """
         Normalizes WCS of map
         """
-        self.wcs.header.update('CDELT1',map.wcs.header['CDELT1'])
-        self.wcs.header.update('CDELT2',map.wcs.header['CDELT2'])
-        self.wcs.header.update('PV2_1',map.wcs.header['PV2_1'])
+        self.wcs.header['CDELT1'] = map.wcs.header['CDELT1']
+        self.wcs.header['CDELT2'] = map.wcs.header['CDELT2']
+        self.wcs.header['PV2_1'] = map.wcs.header['PV2_1']
         self.wcs.updateFromHeader()
         self.header = self.wcs.header.copy()
 
@@ -538,28 +543,28 @@ def liteMapFromFits(file,extension=0):
     
     #[ltmap.x0,ltmap.x1,ltmap.y0,ltmap.y1] = wcs.getImageMinMaxWCSCoords()
     if ltmap.x0 > ltmap.x1:
-        ltmap.pixScaleX = numpy.abs(ltmap.x1-ltmap.x0)/ltmap.Nx*numpy.pi/180.\
-                          *numpy.cos(numpy.pi/180.*0.5*(ltmap.y0+ltmap.y1))
+        ltmap.pixScaleX = np.abs(ltmap.x1-ltmap.x0)/ltmap.Nx*np.pi/180.\
+                          *np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
     else:
-        ltmap.pixScaleX = numpy.abs((360.-ltmap.x1)+ltmap.x0)/ltmap.Nx*numpy.pi/180.\
-                          *numpy.cos(numpy.pi/180.*0.5*(ltmap.y0+ltmap.y1))
+        ltmap.pixScaleX = np.abs((360.-ltmap.x1)+ltmap.x0)/ltmap.Nx*np.pi/180.\
+                          *np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
         
-    ltmap.pixScaleY = numpy.abs(ltmap.y1-ltmap.y0)/ltmap.Ny*numpy.pi/180.
+    ltmap.pixScaleY = np.abs(ltmap.y1-ltmap.y0)/ltmap.Ny*np.pi/180.
     #print 0.5*(ltmap.y0+ltmap.y1)
-    ltmap.area = ltmap.Nx*ltmap.Ny*ltmap.pixScaleX*ltmap.pixScaleY*(180./numpy.pi)**2
-    #print numpy.cos(numpy.pi/180.*0.5*(ltmap.y0+ltmap.y1))
+    ltmap.area = ltmap.Nx*ltmap.Ny*ltmap.pixScaleX*ltmap.pixScaleY*(180./np.pi)**2
+    #print np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
     flTrace.issue('flipper.liteMap',1,'Reading file %s'%file)
     flTrace.issue("flipper.liteMap",1, "Map dimensions (Ny,Nx) %d %d"%\
                 (ltmap.Ny,ltmap.Nx))
     flTrace.issue("flipper.liteMap",1, "pixel scales Y, X (degrees) %f %f"%\
-                (ltmap.pixScaleY*180./numpy.pi,ltmap.pixScaleX*180./numpy.pi))
+                (ltmap.pixScaleY*180./np.pi,ltmap.pixScaleX*180./np.pi))
     
     return ltmap
 
         
 def liteMapFromDataAndWCS(data,wcs):
     """
-    @brief Given a numpy array: data and a astLib.astWCS instance: wcs creates a liteMap
+    @brief Given a np array: data and a astLib.astWCS instance: wcs creates a liteMap
     
     """
     ltmap = liteMap()
@@ -575,21 +580,21 @@ def liteMapFromDataAndWCS(data,wcs):
     ltmap.x1,ltmap.y1 = wcs.pix2wcs(ltmap.Nx-1,ltmap.Ny-1)
 
     if ltmap.x0 > ltmap.x1:
-        ltmap.pixScaleX = numpy.abs(ltmap.x1-ltmap.x0)/ltmap.Nx*numpy.pi/180.\
-                          *numpy.cos(numpy.pi/180.*0.5*(ltmap.y0+ltmap.y1))
+        ltmap.pixScaleX = np.abs(ltmap.x1-ltmap.x0)/ltmap.Nx*np.pi/180.\
+                          *np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
     else:
-        ltmap.pixScaleX = numpy.abs((360.-ltmap.x1)+ltmap.x0)/ltmap.Nx*numpy.pi/180.\
-                          *numpy.cos(numpy.pi/180.*0.5*(ltmap.y0+ltmap.y1))
-    ltmap.pixScaleY = numpy.abs(ltmap.y1-ltmap.y0)/ltmap.Ny*numpy.pi/180.
+        ltmap.pixScaleX = np.abs((360.-ltmap.x1)+ltmap.x0)/ltmap.Nx*np.pi/180.\
+                          *np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
+    ltmap.pixScaleY = np.abs(ltmap.y1-ltmap.y0)/ltmap.Ny*np.pi/180.
     
     #print 0.5*(ltmap.y0+ltmap.y1)
-    ltmap.area = ltmap.Nx*ltmap.Ny*ltmap.pixScaleX*ltmap.pixScaleY*(180./numpy.pi)**2
-    #print numpy.cos(numpy.pi/180.*0.5*(ltmap.y0+ltmap.y1))
+    ltmap.area = ltmap.Nx*ltmap.Ny*ltmap.pixScaleX*ltmap.pixScaleY*(180./np.pi)**2
+    #print np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
     flTrace.issue('flipper.liteMap',1,'Reading file %s'%file)
     flTrace.issue("flipper.liteMap",1, "Map dimensions (Ny,Nx) %d %d"%\
                 (ltmap.Ny,ltmap.Nx))
     flTrace.issue("flipper.liteMap",1, "pixel scales Y, X (degrees) %f %f"%\
-                (ltmap.pixScaleY*180./numpy.pi,ltmap.pixScaleX*180./numpy.pi))
+                (ltmap.pixScaleY*180./np.pi,ltmap.pixScaleX*180./np.pi))
     
     return ltmap
 
@@ -599,8 +604,8 @@ def takeDivergence(vecMapX,vecMapY):
     @brief Takes the divergence of a vector field whose x and y componenets are specified by
     two liteMaps
     """
-    gradXY,gradXX = numpy.gradient(vecMapX.data,vecMapX.pixScaleY,vecMapX.pixScaleX)
-    gradYY,gradYX = numpy.gradient(vecMapY.data,vecMapY.pixScaleY,vecMapY.pixScaleX)
+    gradXY,gradXX = np.gradient(vecMapX.data,vecMapX.pixScaleY,vecMapX.pixScaleX)
+    gradYY,gradYX = np.gradient(vecMapY.data,vecMapY.pixScaleY,vecMapY.pixScaleX)
     divMap = vecMapX.copy()
     divMap.data[:,:] = gradXX[:,:] + gradYY[:,:]
     return divMap
@@ -615,7 +620,7 @@ def _deltaTOverTcmbToJyPerSr(freqGHz,T0 = 2.726):
     c = 29979245800.
     nu = freqGHz*1.e9
     x = h*nu/(kB*T0)
-    cNu = 2*(kB*T0)**3/(h**2*c**2)*x**4/(4*(numpy.sinh(x/2.))**2)
+    cNu = 2*(kB*T0)**3/(h**2*c**2)*x**4/(4*(np.sinh(x/2.))**2)
     cNu *= 1e23
     return cNu
 
@@ -625,7 +630,7 @@ def _deltaTOverTcmbToY(freqGHz, T0 = 2.726):
     c = 29979245800.
     nu = freqGHz*1.e9
     x = h*nu/(kB*T0)
-    f_nu = x*(numpy.exp(x)+1)/(numpy.exp(x)-1) - 4
+    f_nu = x*(np.exp(x)+1)/(np.exp(x)-1) - 4
     return 1./f_nu 
 
 
@@ -656,16 +661,16 @@ def addLiteMapsWithSpectralWeighting( liteMap1, liteMap2, kMask1Params = None, k
     n1 = np1.powerMap
         
     n2 = np2.powerMap
-#     n1[numpy.where( n1<n1.max()*.002)] = n1.max()*.001
-#     n2[numpy.where( n2<n2.max()*.002)] = n2.max()*.001
+#     n1[np.where( n1<n1.max()*.002)] = n1.max()*.001
+#     n2[np.where( n2<n2.max()*.002)] = n2.max()*.001
 
     w1 = 1/n1
     w2 = 1/n2
     
-    m1 = numpy.median(w1)
-    m2 = numpy.median(w2)
-    w1[numpy.where(abs(w1)>4*m1)]=4*m1
-    w2[numpy.where(abs(w2)>4*m2)]=4*m2
+    m1 = np.median(w1)
+    m2 = np.median(w2)
+    w1[np.where(abs(w1)>4*m1)]=4*m1
+    w2[np.where(abs(w2)>4*m2)]=4*m2
 
     #w1[:] = 1.
     #w2[:] = 1.
@@ -688,18 +693,18 @@ def addLiteMapsWithSpectralWeighting( liteMap1, liteMap2, kMask1Params = None, k
     pylab.clf()
     
     invW = 1.0/(w1+w2)
-    invW[numpy.where(numpy.isnan(invW))] = 0.
-    invW[numpy.where(numpy.isinf(invW))] = 0.
+    invW[np.where(np.isnan(invW))] = 0.
+    invW[np.where(np.isinf(invW))] = 0.
 
-    flTrace.issue("liteMap", 3, "NaNs in inverse weight: %s" % str(numpy.where(numpy.isnan(invW))))
-    flTrace.issue("liteMap", 3, "Infs in inverse weight: %s" % str(numpy.where(numpy.isinf(invW))))
+    flTrace.issue("liteMap", 3, "NaNs in inverse weight: %s" % str(np.where(np.isnan(invW))))
+    flTrace.issue("liteMap", 3, "Infs in inverse weight: %s" % str(np.where(np.isinf(invW))))
 
 
     flTrace.issue("liteMap", 2, "Adding Maps")
     f1  = fftTools.fftFromLiteMap( liteMap1, applySlepianTaper = False )
     f2  = fftTools.fftFromLiteMap( liteMap2, applySlepianTaper = False )
     kTot = (f1.kMap*w1 + f2.kMap*w2)*invW
-    flTrace.issue("liteMap", 3, "NaNs in filtered transform: %s" % str(numpy.where(numpy.isnan(kTot))))
+    flTrace.issue("liteMap", 3, "NaNs in filtered transform: %s" % str(np.where(np.isnan(kTot))))
     f1.kMap = kTot
     finalMap = liteMap1.copy()
     finalMap.data[:] = 0.
@@ -720,9 +725,9 @@ def normalizeWCS(map0,map1):
 
     wcs0 = map0.wcs.copy()
     wcs1 = map1.wcs.copy()
-    wcs1.header.update('CDELT1',wcs0.header['CDELT1'])
-    wcs1.header.update('CDELT2',wcs0.header['CDELT2'])
-    wcs1.header.update('PV2_1',wcs0.header['PV2_1'])
+    wcs1.header['CDELT1'] =  wcs0.header['CDELT1']
+    wcs1.header['CDELT2'] = wcs0.header['CDELT2']
+    wcs1.header['PV2_1'] = wcs0.header['PV2_1']
     
     wcs1.updateFromHeader()
     data = map1.data.copy()
@@ -741,11 +746,11 @@ def upgradePixelPitch( m, N = 1 ):
     Nx = m.Nx*2**N
     npix = Ny*Nx
 
-    ft = numpy.fft.fft2(m.data)
-    ftShifted = numpy.fft.fftshift(ft)
-    newFtShifted = numpy.zeros((Ny, Nx), dtype=numpy.complex128)
+    ft = np.fft.fft2(m.data)
+    ftShifted = np.fft.fftshift(ft)
+    newFtShifted = np.zeros((Ny, Nx), dtype=np.complex128)
 
-    # From the numpy.fft.fftshift help:
+    # From the np.fft.fftshift help:
     # """
     # Shift zero-frequency component to center of spectrum.
     #
@@ -767,37 +772,37 @@ def upgradePixelPitch( m, N = 1 ):
     
     newFtShifted[offsetY:offsetY+m.Ny,offsetX:offsetX+m.Nx] = ftShifted
     del ftShifted
-    ftNew = numpy.fft.ifftshift(newFtShifted)
+    ftNew = np.fft.ifftshift(newFtShifted)
     del newFtShifted
 
     # Finally, deconvolve by the pixel window
-    mPix = numpy.copy(numpy.real(ftNew))
+    mPix = np.copy(np.real(ftNew))
     mPix[:] = 0.0
     mPix[mPix.shape[0]/2-(2**(N-1)):mPix.shape[0]/2+(2**(N-1)),mPix.shape[1]/2-(2**(N-1)):mPix.shape[1]/2+(2**(N-1))] = 1./(2.**N)**2
-    ftPix = numpy.fft.fft2(mPix)
+    ftPix = np.fft.fft2(mPix)
     del mPix
-    inds = numpy.where(ftNew != 0)
-    ftNew[inds] /= numpy.abs(ftPix[inds])
-    newData = numpy.fft.ifft2(ftNew)*(2**N)**2
+    inds = np.where(ftNew != 0)
+    ftNew[inds] /= np.abs(ftPix[inds])
+    newData = np.fft.ifft2(ftNew)*(2**N)**2
     del ftNew
     del ftPix
 
     x0_new,y0_new = m.pixToSky(0,0)
     
     m = m.copy() # don't overwrite original 
-    m.wcs.header.update('NAXIS1',  2**N*m.wcs.header['NAXIS1'] )
-    m.wcs.header.update('NAXIS2',  2**N*m.wcs.header['NAXIS2'] )
-    m.wcs.header.update('CDELT1',  m.wcs.header['CDELT1']/2.**N)
-    m.wcs.header.update('CDELT2',  m.wcs.header['CDELT2']/2.**N)
+    m.wcs.header['NAXIS1'] =  2**N*m.wcs.header['NAXIS1']
+    m.wcs.header['NAXIS2'] = 2**N*m.wcs.header['NAXIS2'] 
+    m.wcs.header['CDELT1'] = m.wcs.header['CDELT1']/2.**N
+    m.wcs.header['CDELT2'] = m.wcs.header['CDELT2']/2.**N
     m.wcs.updateFromHeader()
     
     p_x, p_y = m.skyToPix(x0_new, y0_new)
     
-    m.wcs.header.update('CRPIX1', m.wcs.header['CRPIX1'] - p_x)
-    m.wcs.header.update('CRPIX2', m.wcs.header['CRPIX2'] - p_y)
+    m.wcs.header['CRPIX1'] = m.wcs.header['CRPIX1'] - p_x
+    m.wcs.header['CRPIX2'] = m.wcs.header['CRPIX2'] - p_y
     m.wcs.updateFromHeader()
 
-    mNew = liteMapFromDataAndWCS(numpy.real(newData), m.wcs)
+    mNew = liteMapFromDataAndWCS(np.real(newData), m.wcs)
     mNew.data[:] = newData[:]
     return mNew
 
@@ -810,16 +815,16 @@ def getEmptyMapWithDifferentDims(m,Ny,Nx):
     @param Nx
     
     """
-    data = numpy.zeros([Ny,Nx])
+    data = np.zeros([Ny,Nx])
     m = m.copy()
-    m.wcs.header.update('NAXIS1',Nx)
-    m.wcs.header.update('NAXIS2',Ny)
-    m.wcs.header.update('CDELT1',  m.wcs.header['CDELT1']*(m.Nx/(Nx*1.0)))
-    m.wcs.header.update('CDELT2',  m.wcs.header['CDELT2']*(m.Ny/(Ny*1.0)))
+    m.wcs.header['NAXIS1'] = Nx
+    m.wcs.header['NAXIS2'] = Ny
+    m.wcs.header['CDELT1'] =  m.wcs.header['CDELT1']*(m.Nx/(Nx*1.0))
+    m.wcs.header['CDELT2'] =  m.wcs.header['CDELT2']*(m.Ny/(Ny*1.0))
     m.wcs.updateFromHeader()
     p_x, p_y = m.skyToPix(m.x0,m.y0)
-    m.wcs.header.update('CRPIX1', m.wcs.header['CRPIX1'] - p_x)
-    m.wcs.header.update('CRPIX2', m.wcs.header['CRPIX2'] - p_y)
+    m.wcs.header['CRPIX1'] = m.wcs.header['CRPIX1'] - p_x
+    m.wcs.header['CRPIX2'] = m.wcs.header['CRPIX2'] - p_y
     m.wcs.updateFromHeader()
     mNew = liteMapFromDataAndWCS(data, m.wcs)
     return mNew
@@ -831,8 +836,8 @@ def getCoordinateArrays( m ):
     """
     return two arrays containing the "sky" coordinates for all pixels in map m
     """
-    ra = numpy.copy(m.data)
-    dec = numpy.copy(m.data)
+    ra = np.copy(m.data)
+    dec = np.copy(m.data)
     for i in xrange(m.Ny):
         for j in xrange(m.Nx):
             ra[i,j], dec[i,j] = m.pixToSky(j,i)
@@ -847,9 +852,9 @@ def resampleFromHiResMap(highResMap, lowResTemp):
     @return low res map 
     """
     #print highResMap.y0 - lowResTemp.y0
-    assert numpy.abs(highResMap.x0-lowResTemp.x0)/highResMap.x0 < 0.0001
-    assert numpy.abs(highResMap.y0-lowResTemp.y0)/highResMap.x0 < 0.0001
-    #assert(highResMap.y0 == lowResTemp.y0)
+    assert np.abs(highResMap.x0-lowResTemp.x0)/highResMap.x0 < 0.0001
+    assert np.abs(highResMap.y0-lowResTemp.y0)/highResMap.x0 < 0.0001
+    #assert np.isclose(highResMap.y0, lowResTemp.y0)
     assert highResMap.Nx> lowResTemp.Nx
     assert highResMap.Ny> lowResTemp.Ny
     
@@ -857,15 +862,13 @@ def resampleFromHiResMap(highResMap, lowResTemp):
     w = lowResTemp.copy()
     m.data[:] = 0.
     w.data[:] = 0.
-    t0 = time.time()
     for i in xrange(highResMap.Ny):
         for j in xrange(highResMap.Nx):
             ra, dec = highResMap.pixToSky(j,i)
-            ix,iy = m.skyToPix(ra,dec)
+            ix,iy = [int(ind) for ind in m.skyToPix(ra,dec)]
             m.data[iy,ix] += highResMap.data[i,j]
             w.data[iy,ix] += 1.0
-    t1 = time.time()
-    assert numpy.all(w.data[:] >0.)
+    assert np.all(w.data[:] >0.)
     m.data[:] /=w.data[:]
     return m 
 
@@ -878,7 +881,7 @@ def getRadiusAboutPoint( m, x0, y0, coordinateArrays = None):
         x, y = getCoordinateArrays(m)
     else:
         (x,y) = coordinateArrays
-    dx  = (x  - x0 ) * numpy.cos(y*numpy.pi/180.)
+    dx  = (x  - x0 ) * np.cos(y*np.pi/180.)
     dy = (y - y0)
     theta = (dx**2 + dy**2)**0.5
     return theta
@@ -889,22 +892,22 @@ def binDataAroundPoint( m, x0, y0, bins, median = False ):
     @return bin centers, average in bins, standard deviation in bins
     """
     x, y = getCoordinateArrays(m)
-    dx  = (x  - x0 ) * numpy.cos(y*numpy.pi/180.)
+    dx  = (x  - x0 ) * np.cos(y*np.pi/180.)
     dy = (y - y0)
     theta = (dx**2 + dy**2)**0.5
     avg = []
     std = []
     cen = []
     for bin in bins:
-        inds = numpy.where((theta >= float(bin[0])/3600.)*(theta < float(bin[1]/3600.)))
+        inds = np.where((theta >= float(bin[0])/3600.)*(theta < float(bin[1]/3600.)))
         if median:
-            avg.append(numpy.median(m.data[inds]))
+            avg.append(np.median(m.data[inds]))
         else:
-            avg.append(numpy.mean(m.data[inds]))
-        std.append(numpy.std(m.data[inds])/numpy.sqrt(len(inds[0])))
-        cen.append(numpy.mean(bin))
+            avg.append(np.mean(m.data[inds]))
+        std.append(np.std(m.data[inds])/np.sqrt(len(inds[0])))
+        cen.append(np.mean(bin))
 
-    return numpy.array(cen), numpy.array(avg), numpy.array(std)
+    return np.array(cen), np.array(avg), np.array(std)
 
 def makeEmptyCEATemplate(raSizeDeg, decSizeDeg,meanRa = 180., meanDec = 0.,\
                       pixScaleXarcmin = 0.5, pixScaleYarcmin=0.5):
@@ -913,8 +916,8 @@ def makeEmptyCEATemplate(raSizeDeg, decSizeDeg,meanRa = 180., meanDec = 0.,\
     
     cdelt1 = -pixScaleXarcmin/60.
     cdelt2 = pixScaleYarcmin/60.
-    naxis1 = numpy.int(raSizeDeg/pixScaleXarcmin*60.+0.5)
-    naxis2 = numpy.int(decSizeDeg/pixScaleYarcmin*60.+0.5)
+    naxis1 = np.int(raSizeDeg/pixScaleXarcmin*60.+0.5)
+    naxis2 = np.int(decSizeDeg/pixScaleYarcmin*60.+0.5)
     refPix1 = naxis1/2.
     refPix2 = naxis2/2.
     pv2_1 = 1.0
@@ -934,7 +937,7 @@ def makeEmptyCEATemplate(raSizeDeg, decSizeDeg,meanRa = 180., meanDec = 0.,\
     cardList.append(pyfits.Card('CUNIT2', 'DEG'))
     hh = pyfits.Header(cards=cardList)
     wcs = astLib.astWCS.WCS(hh, mode='pyfits')
-    data = numpy.zeros([naxis2,naxis1])
+    data = np.zeros([naxis2,naxis1])
     ltMap = liteMapFromDataAndWCS(data,wcs)
     
     return ltMap
@@ -950,17 +953,17 @@ def makeEmptyCEATemplateAdvanced(ra0, dec0, \
     assert ra0<ra1
     assert dec0<dec1
     refDec = (dec0+dec1)/2.
-    cosRefDec =  numpy.cos(refDec/180.*numpy.pi)
+    cosRefDec =  np.cos(refDec/180.*np.pi)
     raSizeDeg  = (ra1 - ra0)*cosRefDec
     decSizeDeg = (dec1-dec0)
     
     cdelt1 = -pixScaleXarcmin/(60.*cosRefDec)
     cdelt2 = pixScaleYarcmin/(60.*cosRefDec)
-    naxis1 = numpy.int(raSizeDeg/pixScaleXarcmin*60.+0.5)
-    naxis2 = numpy.int(decSizeDeg/pixScaleYarcmin*60.+0.5)
-    refPix1 = numpy.int(-ra1/cdelt1+0.5)
-    refPix2 = numpy.int(numpy.sin(-dec0*numpy.pi/180.)\
-                        *180./numpy.pi/cdelt2/cosRefDec**2+0.5)
+    naxis1 = np.int(raSizeDeg/pixScaleXarcmin*60.+0.5)
+    naxis2 = np.int(decSizeDeg/pixScaleYarcmin*60.+0.5)
+    refPix1 = np.int(-ra1/cdelt1+0.5)
+    refPix2 = np.int(np.sin(-dec0*np.pi/180.)\
+                        *180./np.pi/cdelt2/cosRefDec**2+0.5)
     pv2_1 = cosRefDec**2
     cardList = pyfits.CardList()
     cardList.append(pyfits.Card('NAXIS', 2))
@@ -986,7 +989,7 @@ def makeEmptyCEATemplateAdvanced(ra0, dec0, \
     
     hh = pyfits.Header(cards=cardList)
     wcs = astLib.astWCS.WCS(hh, mode='pyfits')
-    data = numpy.zeros([naxis2,naxis1])
+    data = np.zeros([naxis2,naxis1])
     ltMap = liteMapFromDataAndWCS(data,wcs)
     
     return ltMap

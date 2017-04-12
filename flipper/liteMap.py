@@ -122,6 +122,7 @@ class liteMap:
         #kk[id2] *= np.cos((lEnd-lEnd.min())/(lEnd.max() -lEnd.min())*np.pi/2)
         
         #pylab.loglog(ll,kk)
+        
 
         area = Nx*Ny*self.pixScaleX*self.pixScaleY
         p = np.reshape(kk,[Ny,Nx]) /area * (Nx*Ny)**2

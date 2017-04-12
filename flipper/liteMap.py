@@ -966,7 +966,7 @@ def makeEmptyCEATemplateAdvanced(ra0, dec0, \
     refPix2 = np.int(np.sin(-dec0*np.pi/180.)\
                         *180./np.pi/cdelt2/cosRefDec**2+0.5)
     pv2_1 = cosRefDec**2
-    cardList = pyfits.CardList()
+    cardList = pyfits.Header() #CardList()
     cardList.append(pyfits.Card('NAXIS', 2))
     cardList.append(pyfits.Card('NAXIS1', naxis1))
     cardList.append(pyfits.Card('NAXIS2', naxis2))

@@ -10,11 +10,9 @@ try:
     import pylab
 except:
     pass
-from numpy.fft import fftshift,fftfreq #,fft2,ifft2
+from numpy.fft import fftshift,fftfreq
 
-# Use scipy if you can't install pyfftw for slightly slower FFTs 
-from enlib import fft as fftfast
-
+import flipper.fft as fftfast
 
 import copy
 from scipy.interpolate import splrep, splev

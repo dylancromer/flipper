@@ -13,7 +13,7 @@ import copy
 #import astropy.io.fits as pyfits
 #import astropy.wcs as pywcs
 import pyfits
-from enlib import fft as fftfast
+import flipper.fft as fftfast
 
 import astLib
 from astLib import astWCS

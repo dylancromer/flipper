@@ -994,3 +994,22 @@ def makeEmptyCEATemplateAdvanced(ra0, dec0, \
     ltMap = liteMapFromDataAndWCS(data,wcs)
     
     return ltMap
+
+
+
+def phiToKappa(phiMap):
+    kappaMap = phiMap.copy()
+    phiF = fftTools.fftFromLiteMap(phiMap)
+    kappaF = phiF.copy()
+    kappaF.kMap *= kappaF.modLMap**2 / 2.
+    kappaMap.data[:] = kappaF.mapFromFFT( setMeanToZero = True)
+    return kappaMap
+
+def kappaToPhi(kappaMap):
+    phiMap = kappaMap.copy()
+    kappaF = fftTools.fftFromLiteMap(kappaMap)
+    phiF = kappaF.copy()
+    phiF.kMap /= (phiF.modLMap**2 / 2.)
+    phiF.kMap[0,0] = 0
+    phiMap.data[:] = phiF.mapFromFFT( setMeanToZero = True)
+    return phiMap

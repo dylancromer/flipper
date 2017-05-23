@@ -126,7 +126,7 @@ class liteMap:
 
         area = Nx*Ny*self.pixScaleX*self.pixScaleY
         p = np.reshape(kk,[Ny,Nx]) /area * (Nx*Ny)**2
-                
+        assert np.all(p>0)
         
         realPart = np.sqrt(p)*np.random.randn(Ny,Nx)
         imgPart = np.sqrt(p)*np.random.randn(Ny,Nx)
@@ -213,7 +213,7 @@ class liteMap:
 
 
 
-    def selectSubMap(self,x0,x1,y0,y1, safe = False):
+    def selectSubMap(self,x0,x1,y0,y1, safe = False, edge_treatment = True):
         """
         Returns a submap given new map bounds e.g. ra0,ra1,dec0,dec1
 
@@ -241,6 +241,14 @@ class liteMap:
         j1 = np.int(iy1+0.5)
         ixx = np.sort([i0,i1])
         iyy = np.sort([j0,j1])
+
+        if edge_treatment:
+            # Fix from TL and AvE for patches that span ra=0
+            # TODO: test this
+            P=(2*numpy.pi)/self.pixScaleX
+            ixx[1]= ixx[0]+(ixx[1]-ixx[0]+P/2)%P -P/2
+            ixx=numpy.sort(ixx)
+
         #print ixx,iyy
         data = (self.data.copy())[iyy[0]:iyy[1],ixx[0]:ixx[1]]
         wcs = self.wcs.copy()

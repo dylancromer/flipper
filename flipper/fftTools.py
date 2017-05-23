@@ -22,7 +22,9 @@ import sys, os
 from utils import *
 import flTrace
 import pyfits
-taperDir = os.path.dirname(os.path.abspath(__file__))+ os.path.sep+'..'+ os.path.sep + "tapers"
+
+tools_path = os.path.dirname(os.path.abspath(__file__))
+taperDir = tools_path+ os.path.sep+'..'+ os.path.sep + "tapers"
 
 class fft2D:
     """
@@ -995,7 +997,7 @@ def readBinningFile(binningFile):
     """
     
     if not (os.path.exists(binningFile)):
-        binningFile = os.environ['FLIPPER_DIR']+os.path.sep+'params'+os.path.sep+binningFile
+        binningFile = os.path.join(tools_path, '../params', binningFile)
         if not (os.path.exists(binningFile)):
             raise IOError, 'Binning file %s not found'%binningFile
         

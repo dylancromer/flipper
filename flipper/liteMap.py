@@ -529,6 +529,24 @@ class liteMap:
         self.wcs.header['PV2_1'] = map.wcs.header['PV2_1']
         self.wcs.updateFromHeader()
         self.header = self.wcs.header.copy()
+        
+def liteMapsFromEnlibFits(fname):
+    hdu = pyfits.open(fname)[0]
+    wcs = astLib.astWCS.WCS(hdu.header, mode="pyfits")
+    d   = hdu.data
+    # Flipper doesn't handle maps with positive cdelt1, so
+    # flip map in this case.
+    if wcs.header["CDELT1"] > 0:
+        wcs.header.update("CDELT1", -float(wcs.header["CDELT1"]))
+        wcs.header.update("CRPIX1", d.shape[-1]+1-float(wcs.header["CRPIX1"]))
+        # Yes, simply changing the header is not enough
+        wcs = astLib.astWCS.WCS(wcs.header, mode="pyfits")
+        d = d[...,::-1]
+    res = np.empty(np.product(d.shape[:-2],dtype=int),dtype=object)
+    for i, delem in enumerate(d.reshape(-1,d.shape[-2],d.shape[-1])):
+        res[i] = liteMapFromDataAndWCS(delem, wcs)
+
+    return res.reshape(d.shape[:-2])
 
 def liteMapFromFits(file,extension=0):
     """

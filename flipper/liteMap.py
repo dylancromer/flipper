@@ -213,7 +213,7 @@ class liteMap:
 
 
 
-    def selectSubMap(self,x0,x1,y0,y1, safe = False, edge_treatment = True):
+    def selectSubMap(self,x0,x1,y0,y1, safe = False, edge_treatment = False):
         """
         Returns a submap given new map bounds e.g. ra0,ra1,dec0,dec1
 

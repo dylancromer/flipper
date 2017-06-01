@@ -126,7 +126,7 @@ class liteMap:
 
         area = Nx*Ny*self.pixScaleX*self.pixScaleY
         p = np.reshape(kk,[Ny,Nx]) /area * (Nx*Ny)**2
-        assert np.all(p>0)
+        assert np.all(p>=0)
         
         realPart = np.sqrt(p)*np.random.randn(Ny,Nx)
         imgPart = np.sqrt(p)*np.random.randn(Ny,Nx)

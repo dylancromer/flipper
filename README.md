@@ -1,7 +1,7 @@
 flipper
 =======
 
-Originally authored by Sudeep Das and Toby Marriage, this fork of flipper is jointly maintained on the ACT organization.
+Originally authored by Sudeep Das and Toby Marriage, this fork of flipper is jointly maintained on the ACT github organization.
 
 Documentation can be found at:
 http://www.hep.anl.gov/sdas/flipperDocumentation/
@@ -12,6 +12,8 @@ In contrast with the original version, after installation (see below) you now im
 from flipper import liteMap
 import flipper.fftTools as ft
 ```
+
+This fork of flipper also includes a copy of Sigurd Naess' enlib.fft module, a wrapper for fast multi-threaded pyfftw FFTs.
 
 Flipper is a light-weight python tool for working with CMB data which broadly provides three main functionalities:
 A suite of tools for operations performed on maps, like application of filters, taking gradients etc.

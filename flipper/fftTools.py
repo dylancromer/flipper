@@ -23,8 +23,7 @@ from utils import *
 import flTrace
 import pyfits
 
-tools_path = os.path.dirname(os.path.abspath(__file__))
-taperDir = tools_path+ os.path.sep+'..'+ os.path.sep + "tapers"
+__FLIPPER_DIR__ = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 
 class fft2D:
     """
@@ -246,12 +245,14 @@ def fftFromLiteMap(liteMap,applySlepianTaper = False,nresForSlepian=3.0):
 
     if (applySlepianTaper) :
         try:
-            f = open(taperDir + os.path.sep + 'taper_Ny%d_Nx%d_Nres%3.1f'%(ft.Ny,ft.Nx,nresForSlepian))
+            path_to_taper = os.path.join(__FLIPPER_DIR__, "tapers", 'taper_Ny%d_Nx%d_Nres%3.1f'%(ft.Ny,ft.Nx,nresForSlepian))
+            f = open(path_to_taper)
             taper = pickle.load(f)
             f.close()
         except:
             taper = slepianTaper00(ft.Nx,ft.Ny,nresForSlepian)
-            f = open(taperDir + os.path.sep + 'taper_Ny%d_Nx%d_Nres%3.1f'%(ft.Ny,ft.Nx,nresForSlepian),mode="w")
+            path_to_taper = os.path.join(__FLIPPER_DIR__, "tapers", 'taper_Ny%d_Nx%d_Nres%3.1f'%(ft.Ny,ft.Nx,nresForSlepian))
+            f = open(path_to_taper, mode="w")
             pickle.dump(taper,f)
             f.close()
     
@@ -997,7 +998,9 @@ def readBinningFile(binningFile):
     """
     
     if not (os.path.exists(binningFile)):
-        binningFile = os.path.join(tools_path, '../params', binningFile)
+
+        binningFile = os.path.join(__FLIPPER_DIR__, 'params', binningFile)  
+
         if not (os.path.exists(binningFile)):
             raise IOError, 'Binning file %s not found'%binningFile
         

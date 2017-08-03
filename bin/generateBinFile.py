@@ -35,7 +35,7 @@ argparser.add_argument('-d', '--deltal',
         help='bin size')
 
 argparser.add_argument('-f', '--fname',
-        default='newBinFile',
+        default='',
         help='name of the output bin file')
 
 args = argparser.parse_args()
@@ -43,7 +43,11 @@ args = argparser.parse_args()
 lmin        = float(args.lmin)
 lmax        = float(args.lmax)
 delta_l     = float(args.deltal)
-output_file = args.fname
+
+output_dir  = "../params"
+output_file = args.fname if args.fname else "BIN_%s_%s_%s" \
+        %(args.lmin, args.lmax, args.deltal)
+output_file = os.path.join(output_dir, output_file)
 
 #basic validation
 if(lmin < 0.0):

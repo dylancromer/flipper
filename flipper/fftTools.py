@@ -198,7 +198,27 @@ class fft2D:
             im2.axes.set_ylim(-zoomUptoL,zoomUptoL)
         if show:
             pylab.show()
-        
+
+    def getTemplate(self):
+        temp = self.copy()
+        temp.kMap = np.zeros(self.kMap.shape)
+        return temp
+
+def fftTemplateFromPower2D(power2D):
+    ft = fft2D()
+
+    ft.Nx, ft.Ny  = power2D.Nx, power2D.Ny
+    ft.pixScaleX = power2D.pixScaleX
+    ft.pixScaleY = power2D.pixScaleY
+
+    ft.lx, ft.ly  = power2D.lx, power2D.ly
+    ft.ix, ft.iy = power2D.ix, power2D.iy
+
+    ft.modLMap  =  power2D.modLMap
+    ft.thetaMap =  power2D.thetaMap
+    
+    ft.kMap     =  np.zeros(power2D.powerMap.shape)
+    return ft 
         
 def fftFromLiteMap(liteMap,applySlepianTaper = False,nresForSlepian=3.0):
     """
@@ -776,7 +796,12 @@ class power2D:
         h.update("CDELT1",np.abs(self.lx[0]-self.lx[1]))
         h.update("CDELT2",np.abs(self.ly[0]-self.ly[1]))
         pyfits.writeto(file,fftshift(self.powerMap),header=h,clobber=overWrite)
-   
+  
+    def getTemplate(self):
+        temp = self.copy()
+        temp.powerMap = np.zeros(temp.powerMap.shape)
+        return temp
+
 def readBinnedPower(file):
     """
     @brief reads in a binned power spectrum from a file

@@ -529,7 +529,12 @@ class liteMap:
         self.wcs.header['PV2_1'] = map.wcs.header['PV2_1']
         self.wcs.updateFromHeader()
         self.header = self.wcs.header.copy()
-        
+
+    def getTemplate(self):
+        temp = self.copy()
+        temp.data = np.zeros(temp.data.shape)
+        return temp
+
 def liteMapsFromEnlibFits(fname):
     hdu = pyfits.open(fname)[0]
     wcs = astLib.astWCS.WCS(hdu.header, mode="pyfits")

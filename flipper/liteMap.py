@@ -203,7 +203,7 @@ class liteMap:
         
         kMap = realPart+1j*imgPart
         
-        data = np.real(fftfast.ifft(kMap,axes=[-2,-1]),normalize=True) 
+        data = np.real(fftfast.ifft(kMap,axes=[-2,-1],normalize=True) )
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]

@@ -30,6 +30,11 @@ class flipperDict( dict ):
                 return None
         return dict.__getitem__( self, key )
 
+    def __getattr__(self, key):
+        if key in self: return dict.__getitem__(self,key)
+        else: raise AttributeError
+
+
     def read_from_file( self, filename ):
         f = open( filename )
         old = ''

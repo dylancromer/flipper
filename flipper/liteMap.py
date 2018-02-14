@@ -535,6 +535,12 @@ class liteMap:
         temp.data = np.zeros(temp.data.shape)
         return temp
 
+    def get_area(self, unit='deg'):
+        assert(unit in ['deg', 'rad'])
+        return self.area if unit is 'deg' else self.area * (np.pi/180.)**2
+
+
+
 def liteMapsFromEnlibFits(fname):
     hdu = pyfits.open(fname)[0]
     wcs = astLib.astWCS.WCS(hdu.header, mode="pyfits")

@@ -203,7 +203,7 @@ class liteMap:
         
         kMap = realPart+1j*imgPart
         
-        data = np.real(fftfast.ifft(kMap,axes=[-2,-1]),normalize=True) 
+        data = np.real(fftfast.ifft(kMap,axes=[-2,-1],normalize=True) )
         
         b = bufferFactor
         self.data = data[(b-1)/2*self.Ny:(b+1)/2*self.Ny,(b-1)/2*self.Nx:(b+1)/2*self.Nx]
@@ -534,6 +534,12 @@ class liteMap:
         temp = self.copy()
         temp.data = np.zeros(temp.data.shape)
         return temp
+
+    def get_area(self, unit='deg'):
+        assert(unit in ['deg', 'rad'])
+        return self.area if unit is 'deg' else self.area * (np.pi/180.)**2
+
+
 
 def liteMapsFromEnlibFits(fname):
     hdu = pyfits.open(fname)[0]

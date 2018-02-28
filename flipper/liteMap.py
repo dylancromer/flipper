@@ -10,9 +10,9 @@ import scipy
 import pylab
 import copy
 
-#import astropy.io.fits as pyfits
+import astropy.io.fits as pyfits
 #import astropy.wcs as pywcs
-import pyfits
+#import pyfits
 import flipper.fft as fftfast
 
 import astLib

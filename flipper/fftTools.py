@@ -21,7 +21,8 @@ import pickle
 import sys, os
 from utils import *
 import flTrace
-import pyfits
+import astropy.io.fits as pyfits
+#import pyfits
 
 __FLIPPER_DIR__ = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 

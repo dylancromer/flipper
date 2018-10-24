@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy
 import scipy
 import sys, os
@@ -63,10 +64,10 @@ def slepianTaper00(Nx,Ny,Nres):
         w0 = dpss0Fast(Nx,Nres*1.0/Nx)
         w1 = dpss0Fast(Ny,Nres*1.0/Ny)
     except:
-        print 'Switching to slower algorithm for Taper generation.'
-        print 'Retry after running: '
-        print 'f2py -c dpss.f -m dpss'
-        print 'in the python/ directory in flipper'
+        print('Switching to slower algorithm for Taper generation.')
+        print('Retry after running: ')
+        print('f2py -c dpss.f -m dpss')
+        print('in the python/ directory in flipper')
         w0 = dpss0(Nx,Nres*1.0/Nx)
         w1 = dpss0(Ny,Nres*1.0/Ny)
     taper = numpy.outer(w1,w0)*numpy.sqrt(Nx*Ny*1.0)
@@ -109,12 +110,12 @@ def discKern(semiY,semiX):
     @ param semiX semiMajor axis (number of pixels)
     
     """
-    print "in discKern: SemiY, SemiX", semiY, semiX
+    print("in discKern: SemiY, SemiX", semiY, semiX)
     assert(semiY > 0)
     assert(semiX > 0)
     sizeY = int(2*semiY+0.5)
     sizeX = int(2*semiX+0.5)
-    print "sizes",sizeY,sizeX
+    print("sizes",sizeY,sizeX)
     y, x = scipy.mgrid[-sizeY:sizeY+1, -sizeX:sizeX+1]
     g = numpy.zeros(y.shape)
     

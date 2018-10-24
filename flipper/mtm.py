@@ -1,9 +1,10 @@
+from __future__ import absolute_import
 import numpy
 import sys
 import os
 import pylab
-import fftTools
-import utils
+from . import fftTools
+from . import utils
 import trace
 
 class mtm:

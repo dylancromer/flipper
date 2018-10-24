@@ -3,9 +3,11 @@ d@file ffTools.py
 @brief FFT  and Power Spectrum Tools
 @author Sudeep Das and Tobias A Marriage
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 import numpy as np
-import utils
+from . import utils
 try:
     import pylab
 except:
@@ -19,8 +21,8 @@ from scipy.interpolate import splrep, splev
 import scipy
 import pickle
 import sys, os
-from utils import *
-import flTrace
+from .utils import *
+from . import flTrace
 import astropy.io.fits as pyfits
 #import pyfits
 
@@ -503,7 +505,7 @@ class power2D:
         """
         binLower,binUpper,binCenter = readBinningFile(binningFile)
         nBins = binLower.size
-        print "nBins",nBins
+        print("nBins",nBins)
         if forceContiguousBins:
             assert(nearestIntegerBinning == False)
             # redefine bin upper
@@ -561,7 +563,7 @@ class power2D:
         if nPix>0:
             p = (np.sum(cls[idx]*wtheta[idx]) - (cls[idx].mean())*(wtheta[idx].sum()))/(np.mean(cls[idx]))
         else:
-            print 'nPix is zero: no observation in bin (%f,%f)'%(lLower,lUpper)
+            print('nPix is zero: no observation in bin (%f,%f)'%(lLower,lUpper))
             p = 0.
         return p, nPix
         
@@ -864,7 +866,7 @@ def plotBinnedPower(lbin,plbin,\
     else:
         lth=[]
         clth=[]
-    print " In fftTools: %f ******* "%yFactor
+    print(" In fftTools: %f ******* "%yFactor)
     #beamLFactor = exp(-lth*(lth+1.)*(beamFWHM/60.*np.pi/180.)**2/(8.*np.log(2.))) 
     
     
@@ -891,7 +893,7 @@ def plotBinnedPower(lbin,plbin,\
             pass
         if ylog:
             if len(negIndex[0])>0:
-                print "negIndex **********", negIndex
+                print("negIndex **********", negIndex)
                 pylab.errorbar(lbin[negIndex],-l2pl2pi[negIndex],\
                                yerr=yFactor*lbin[negIndex]**2\
                                /(2*np.pi)*errorBars[negIndex],fmt=None)
@@ -1028,7 +1030,7 @@ def readBinningFile(binningFile):
         binningFile = os.path.join(__FLIPPER_DIR__, 'params', binningFile)  
 
         if not (os.path.exists(binningFile)):
-            raise IOError, 'Binning file %s not found'%binningFile
+            raise IOError('Binning file %s not found'%binningFile)
         
     binLower,binUpper,binCenter= np.loadtxt(binningFile,skiprows=1,unpack=True)
     return binLower,binUpper,binCenter

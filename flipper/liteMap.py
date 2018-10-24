@@ -3,6 +3,8 @@
 @brief Tools for real space maps
 @author Sudeep Das and Toby Marriage
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 import os, sys, copy
 import numpy as np
@@ -18,12 +20,12 @@ import flipper.fft as fftfast
 import astLib
 from astLib import astWCS
 from astLib import astCoords
-from utils import *
-from fftTools import fftFromLiteMap
-import fftTools
-import flTrace
+from .utils import *
+from .fftTools import fftFromLiteMap
+from . import fftTools
+from . import flTrace
 import healpy
-import utils
+from . import utils
 import time
 from scipy.interpolate import splrep,splev
 class gradMap:
@@ -66,21 +68,21 @@ class liteMap:
         @brief pretty print informstion sbout the litMap
         """
         arcmin = 180*60./np.pi
-        print "Dimensions (Ny,Nx) = (%d,%d)"%(self.Ny,self.Nx)
-        print "Pixel Scales: (%f,%f) arcmins. "%(self.pixScaleY*arcmin,self.pixScaleX*arcmin)
-        print "Map Bounds: [(x0,y0), (x1,y1)]: [(%f,%f),(%f,%f)] (degrees)"%(self.x0,self.y0,self.x1,self.y1)
-        print "Map Bounds: [(x0,y0), (x1,y1)]: [(%s,%s),(%s,%s)]"%\
+        print("Dimensions (Ny,Nx) = (%d,%d)"%(self.Ny,self.Nx))
+        print("Pixel Scales: (%f,%f) arcmins. "%(self.pixScaleY*arcmin,self.pixScaleX*arcmin))
+        print("Map Bounds: [(x0,y0), (x1,y1)]: [(%f,%f),(%f,%f)] (degrees)"%(self.x0,self.y0,self.x1,self.y1))
+        print("Map Bounds: [(x0,y0), (x1,y1)]: [(%s,%s),(%s,%s)]"%\
               (astCoords.decimal2hms(self.x0,':'),\
                astCoords.decimal2dms(self.y0,':'),\
                astCoords.decimal2hms(self.x1,':'),\
-               astCoords.decimal2dms(self.y1,':'))
+               astCoords.decimal2dms(self.y1,':')))
         
-        print "Map area = %f sq. degrees."%(self.area)
-        print "Map mean = %f"%(self.data.mean())
-        print "Map std = %f"%(self.data.std())
+        print("Map area = %f sq. degrees."%(self.area))
+        print("Map mean = %f"%(self.data.mean()))
+        print("Map std = %f"%(self.data.std()))
         
         if showHeader:
-            print "Map header \n %s"%(self.header)
+            print("Map header \n %s"%(self.header))
 
 
     def fillWithGaussianRandomField(self,ell,Cell,bufferFactor = 1):
@@ -173,8 +175,8 @@ class liteMap:
         if bufferFactor > 1:
             ell = np.ravel(twodPower.modLMap)
             Cell = np.ravel(twodPower.powerMap)
-            print ell
-            print Cell
+            print(ell)
+            print(Cell)
             s = splrep(ell,Cell,k=3)
         
             
@@ -692,7 +694,7 @@ def addLiteMapsWithSpectralWeighting( liteMap1, liteMap2, kMask1Params = None, k
         liteMap2.data[:] = (liteMap2.data - signalMap.data)[:]
     np1 = fftTools.powerFromLiteMap(liteMap1)#, applySlepianTaper = True)
     np2 = fftTools.powerFromLiteMap(liteMap2)#), applySlepianTaper = True)
-    print "testing", liteMap1.data == data1
+    print("testing", liteMap1.data == data1)
     liteMap1.data[:] = data1[:]
     liteMap2.data[:] = data2[:]
 

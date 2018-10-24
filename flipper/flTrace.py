@@ -1,6 +1,7 @@
 """
 A module for error reporting
 """
+from __future__ import print_function
 
 default = "default"
 traceDict = { default: 0 }
@@ -39,4 +40,4 @@ def issue( traceName, level, message ):
     curLevel = getLevel(traceName)
     if level <= curLevel:
         space = " "*level
-        print "%s%s: %s" % (space, traceName, message)
+        print("%s%s: %s" % (space, traceName, message))

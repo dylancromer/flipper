@@ -564,13 +564,13 @@ def liteMapsFromEnlibFits(fname):
 
     return res.reshape(d.shape[:-2])
 
-def liteMapFromFits(file,extension=0):
+def liteMapFromFits(fitsfile,extension=0):
     """
     @brief Reads in a FITS file and creates a liteMap object out of it.
     @param extension specify the FITS HDU where the map image is stored
     """
     ltmap = liteMap()
-    hdulist = pyfits.open(file)
+    hdulist = pyfits.open(fitsfile)
     header = hdulist[extension].header
     flTrace.issue('flipper.liteMap',3,"Map header \n %s"%header)
     
@@ -578,7 +578,7 @@ def liteMapFromFits(file,extension=0):
 
     [ltmap.Ny,ltmap.Nx] = ltmap.data.shape
 
-    wcs = astLib.astWCS.WCS(file,extensionName = extension)
+    wcs = astLib.astWCS.WCS(fitsfile,extensionName = extension)
     ltmap.wcs = wcs.copy()
     ltmap.header = ltmap.wcs.header
     ltmap.x0,ltmap.y0 = wcs.pix2wcs(0,0)
@@ -596,7 +596,7 @@ def liteMapFromFits(file,extension=0):
     #print 0.5*(ltmap.y0+ltmap.y1)
     ltmap.area = ltmap.Nx*ltmap.Ny*ltmap.pixScaleX*ltmap.pixScaleY*(180./np.pi)**2
     #print np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
-    flTrace.issue('flipper.liteMap',1,'Reading file %s'%file)
+    flTrace.issue('flipper.liteMap',1,'Reading file %s'%fitsfile)
     flTrace.issue("flipper.liteMap",1, "Map dimensions (Ny,Nx) %d %d"%\
                 (ltmap.Ny,ltmap.Nx))
     flTrace.issue("flipper.liteMap",1, "pixel scales Y, X (degrees) %f %f"%\
@@ -633,7 +633,7 @@ def liteMapFromDataAndWCS(data,wcs):
     #print 0.5*(ltmap.y0+ltmap.y1)
     ltmap.area = ltmap.Nx*ltmap.Ny*ltmap.pixScaleX*ltmap.pixScaleY*(180./np.pi)**2
     #print np.cos(np.pi/180.*0.5*(ltmap.y0+ltmap.y1))
-    flTrace.issue('flipper.liteMap',1,'Reading file %s'%file)
+    #flTrace.issue('flipper.liteMap',1,'Reading file %s'%file) seems to fail as file is not defined in this function
     flTrace.issue("flipper.liteMap",1, "Map dimensions (Ny,Nx) %d %d"%\
                 (ltmap.Ny,ltmap.Nx))
     flTrace.issue("flipper.liteMap",1, "pixel scales Y, X (degrees) %f %f"%\

@@ -1,9 +1,11 @@
 from __future__ import print_function
+from builtins import input
+from builtins import range
 import os
 import string
 
 def ask_for( key ):
-    s = raw_input( "flipperDict: enter value for '%s': " % key )
+    s = input( "flipperDict: enter value for '%s': " % key )
     try:
         val = eval(s)
     except NameError:
@@ -52,7 +54,7 @@ class flipperDict( dict ):
             else:
                 line = string.join([old, s[0]])
                 old = ''
-            for i in xrange(len(line)):
+            for i in range(len(line)):
                 if line[i]!=' ':
                     line = line[i:]
                     break
@@ -71,7 +73,7 @@ class flipperDict( dict ):
 
     def write_to_file( self, filename, mode = 'w' ):
         f = open( filename, mode )
-        keys = self.keys()
+        keys = list(self.keys())
         keys.sort()
         for key in keys:
             f.write( "%s = %s\n" % (key,repr(self[key])) )
@@ -82,7 +84,7 @@ class flipperDict( dict ):
     def cmp( self, otherDict ):
         
         diff = []
-        ks = self.keys()
+        ks = list(self.keys())
         for k in ks:
             try:
                 if otherDict[k] == self.params[k]:

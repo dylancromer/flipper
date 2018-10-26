@@ -6,6 +6,8 @@ d@file ffTools.py
 from __future__ import print_function
 from __future__ import absolute_import
 
+from builtins import range
+from builtins import object
 import numpy as np
 from . import utils
 try:
@@ -28,7 +30,7 @@ import astropy.io.fits as pyfits
 
 __FLIPPER_DIR__ = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 
-class fft2D:
+class fft2D(object):
     """
     @brief class describing the two dimensional FFT of a liteMap 
     """
@@ -285,7 +287,7 @@ def fftFromLiteMap(liteMap,applySlepianTaper = False,nresForSlepian=3.0):
 
 
         
-class power2D:
+class power2D(object):
     """
     @brief A class describing the 2-D power spectrum of a liteMap
     """
@@ -379,10 +381,10 @@ class power2D:
         """
         lxMap = self.modLMap.copy()*0.
         lyMap = self.modLMap.copy()*0.
-        for p in xrange(self.Ny):
+        for p in range(self.Ny):
             lxMap[p,:] = self.lx[:]
             
-        for q in xrange(self.Nx):
+        for q in range(self.Nx):
             lyMap[:,q] = self.ly[:]
         
         lxMap = np.ravel(lxMap)
@@ -412,7 +414,7 @@ class power2D:
         thet=[]
         wet = []
         
-        for i in xrange(len(thetas)):
+        for i in range(len(thetas)):
             
             thisWeight = 1.0
             #if thetas[i] <0.:
@@ -517,7 +519,7 @@ class power2D:
         binMean = np.zeros(nBins)
         binSd =  np.zeros(nBins)
         binWeight = np.zeros(nBins)
-        for i in xrange(nBins):
+        for i in range(nBins):
             if noCutBelowL != None:
                 if binUpper[i]<noCutBelowL:
                     (binMean[i],binSd[i]) = self.meanPowerInAnnulus(binLower[i],binUpper[i],\
@@ -584,7 +586,7 @@ class power2D:
         binMean = np.zeros(nBins)
         binWeight = np.zeros(nBins)
         
-        for i in xrange(nBins):
+        for i in range(nBins):
             (binMean[i],binWeight[i]) = self._testIsotropyInAnnulus(binLower[i],binUpper[i],cutByMask=cutByMask)
             
         return binLower,binUpper,binCenter,binMean,binWeight
@@ -708,7 +710,7 @@ class power2D:
             binLower,binUpper,binCenter= readBinningFile(showBinsFromFile)
             theta = np.arange(0,2.*np.pi+0.05,0.05)
             
-            for i in xrange(len(binLower)):
+            for i in range(len(binLower)):
                 x,y = binUpper[i]*np.cos(theta),binUpper[i]*np.sin(theta)
                 pylab.plot(x,y,'k')
 
@@ -825,7 +827,7 @@ def binTheoryPower(l,cl,binningFile):
     lBin = np.zeros(nBins)
     clBin =  np.zeros(nBins)
                
-    for i in xrange(len(binCenter)):
+    for i in range(len(binCenter)):
         idx = np.where((l<binUpper[i]) & (l>binLower[i]))
         lBin[i] = (l[idx]).mean()
         clBin[i] = (cl[idx]).mean()

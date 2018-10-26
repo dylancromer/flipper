@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import range
 import numpy
 import scipy
 import sys, os
@@ -28,8 +29,8 @@ def slepianTapers(Ny,Nx,Nres,Ntap):
     eigs = numpy.zeros([Ntap,Ntap])
     v0,sig0 = dpssFast(Nx,Nres*1.0/Nx,Ntap-1)
     v1,sig1 = dpssFast(Ny,Nres*1.0/Ny,Ntap-1)
-    for i in xrange(Ntap):
-        for j in xrange(Ntap):
+    for i in range(Ntap):
+        for j in range(Ntap):
             tapers[:,:,i,j] = numpy.outer(v1[:,i],v0[:,j])
             eigs[i,j] = sig0[i]*sig1[j]
     tapers *= numpy.sqrt(Ny*Nx*1.0)
@@ -122,7 +123,7 @@ def discKern(semiY,semiX):
     #print y, x
     nRand = 1000000
     rand = numpy.random.rand(nRand,2)
-    for i in xrange(y.shape[0]*y.shape[1]):
+    for i in range(y.shape[0]*y.shape[1]):
         mtric = ((rand[:,0] - (y.flatten())[i] -0.5)/(semiY*1.0))**2\
                 + ((rand[:,1] - (x.flatten())[i]-0.5)/(semiX*1.0))**2
         idd = numpy.where(mtric <1.)
@@ -188,7 +189,7 @@ def bin( x, y, dx, xMin = None, xMax = None ):
     binCnts = numpy.zeros(nBin, dtype = float)
     binStds = numpy.zeros(nBin, dtype = float)
  
-    for i in xrange(nBin):
+    for i in range(nBin):
         binBool = (x > binGinnings[i]) * (x < binGinnings[i] + dx)
         if not binBool.any():
             continue
@@ -239,7 +240,7 @@ def bin( x, y, dx, xMin = None, xMax = None ):
     binCnts = numpy.zeros(nBin, dtype = float)
     binStds = numpy.zeros(nBin, dtype = float)
  
-    for i in xrange(nBin):
+    for i in range(nBin):
         binBool = (x > binGinnings[i]) * (x < binGinnings[i] + dx)
         if not binBool.any():
             continue

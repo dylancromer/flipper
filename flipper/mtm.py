@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from builtins import range
+from builtins import object
 import numpy
 import sys
 import os
@@ -7,7 +9,7 @@ from . import fftTools
 from . import utils
 import trace
 
-class mtm:
+class mtm(object):
     def __init__(self,map,Nres,Ntap,Niter,map2=None,mask=None):
         assert(Ntap>0)
         self.map = map
@@ -42,7 +44,7 @@ class mtm:
         if self.Niter == 0:
             weights[:,:,:,:] = 1.
         else:
-            for k in xrange(self.Ntap*self.Ntap):
+            for k in range(self.Ntap*self.Ntap):
                 i = k/self.Ntap
                 j = numpy.mod(k,self.Ntap)
                 
@@ -79,13 +81,13 @@ class mtm:
         if self.Niter == 0:
             num_iter = 1
 
-        for k in  xrange(num_iter):
+        for k in  range(num_iter):
             trace.issue('mtm',2,'Iteration ...%02d'%k)
             weights = self._getWeights(p2dBest)
             p2d.powerMap[:] = 0.
             totWeight[:] = 0.
-            for i in xrange(self.Ntap):
-                for j in xrange(self.Ntap):
+            for i in range(self.Ntap):
+                for j in range(self.Ntap):
                                     
                     tempMap = self.map.copy()
                     tempMap2 = self.map2.copy()

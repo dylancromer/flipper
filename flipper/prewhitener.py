@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from builtins import object
 from . import liteMap
 import numpy
 import scipy.special as sp
@@ -31,7 +32,7 @@ def discDifference(radius,ltMap,discKern1=None,discKern3=None):
     return discDiffMap
 
 
-class prewhitener:
+class prewhitener(object):
     """
     @brief Class describing pre-whitening operation
     """

@@ -6,6 +6,9 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+from builtins import str
+from builtins import range
+from builtins import object
 import os, sys, copy
 import numpy as np
 import scipy
@@ -28,7 +31,7 @@ import healpy
 from . import utils
 import time
 from scipy.interpolate import splrep,splev
-class gradMap:
+class gradMap(object):
     """
     @brief  Class describing gradient of a liteMap
     """
@@ -40,7 +43,7 @@ class gradMap:
         
         
 
-class liteMap:
+class liteMap(object):
     """
     @brief Class describing a 2-D real space map.
     """
@@ -452,7 +455,7 @@ class liteMap:
         thOut = []
         phOut = []
         if hpCoords != "J2000":
-            for i in xrange(len(th)):
+            for i in range(len(th)):
                 crd = astCoords.convertCoords("J2000", hpCoords, ph[i], th[i], 0.)
                 phOut.append(crd[0])
                 thOut.append(crd[1])
@@ -878,8 +881,8 @@ def getCoordinateArrays( m ):
     """
     ra = np.copy(m.data)
     dec = np.copy(m.data)
-    for i in xrange(m.Ny):
-        for j in xrange(m.Nx):
+    for i in range(m.Ny):
+        for j in range(m.Nx):
             ra[i,j], dec[i,j] = m.pixToSky(j,i)
     return ra, dec
 
@@ -902,8 +905,8 @@ def resampleFromHiResMap(highResMap, lowResTemp):
     w = lowResTemp.copy()
     m.data[:] = 0.
     w.data[:] = 0.
-    for i in xrange(highResMap.Ny):
-        for j in xrange(highResMap.Nx):
+    for i in range(highResMap.Ny):
+        for j in range(highResMap.Nx):
             ra, dec = highResMap.pixToSky(j,i)
             ix,iy = [int(ind) for ind in m.skyToPix(ra,dec)]
             m.data[iy,ix] += highResMap.data[i,j]

@@ -2,11 +2,13 @@
 (Written by Sigurd Naess)
 This is a convenience wrapper of pyfftw."""
 
+from builtins import range
+from builtins import object
 import numpy as np, multiprocessing, os
 engines = {}
 
 # Define our engines. First a baseline numpy-based engine
-class numpy_FFTW:
+class numpy_FFTW(object):
 	"""Minimal wrapper of numpy in order to be able to provide it as an engine.
 	Not a full-blown interface."""
 	def __init__(self, a, b, axes=(-1), direction='FFTW_FORWARD', *args, **kwargs):
@@ -36,7 +38,7 @@ def numpy_n_byte_align_empty(shape, alignment, dtype):
 	doesn't provide an easy way to get it."""
 	return np.empty(shape, dtype)
 
-class NumpyEngine: pass
+class NumpyEngine(object): pass
 numpy_engine = NumpyEngine()
 numpy_engine.FFTW = numpy_FFTW
 numpy_engine.n_byte_align_empty = numpy_n_byte_align_empty
@@ -174,7 +176,7 @@ def nearest_product(n, factors, direction="below"):
 	a = np.zeros(nmax+1,dtype=bool)
 	a[1] = True
 	best = 1
-	for i in xrange(n+1):
+	for i in range(n+1):
 		if not a[i]: continue
 		for f in factors:
 			m = i*f
